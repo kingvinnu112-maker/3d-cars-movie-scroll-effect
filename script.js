@@ -1,69 +1,53 @@
-// JavaScript for scroll animations
+// script.js
 
-// Intersection Observer for lazy loading
-const observer = new IntersectionObserver((entries) => {
+// Scroll Animations
+const scrollElements = document.querySelectorAll('.scroll-animation');
+const elementObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+        if(entry.isIntersecting) {
+            entry.target.classList.add('active');
         } else {
-            entry.target.classList.remove('visible');
+            entry.target.classList.remove('active');
         }
     });
 });
 
-// Target elements to observe
-const elements = document.querySelectorAll('.fade-in');
-elements.forEach((element) => {
-    observer.observe(element);
+scrollElements.forEach(element => {
+    elementObserver.observe(element);
 });
 
-// Parallax effect
-const parallax = (e) => {
-    const target = document.querySelector('.parallax');
-    const speed = 0.5;
-    const x = (window.innerWidth - e.pageX * speed); // Adjust speed here for parallax effect
-    const y = (window.innerHeight - e.pageY * speed);
-    target.style.transform = `translate(${x}px, ${y}px)`;
-};
-
-document.addEventListener('mousemove', parallax);
-
-// Form validation
+// Form Validation
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
-    const inputs = form.querySelectorAll('input, textarea');
-    let valid = true;
-
-    inputs.forEach((input) => {
-        if (!input.value) {
-            valid = false;
-            input.classList.add('error');
-        } else {
-            input.classList.remove('error');
-        }
-    });
-
-    if (!valid) {
-        event.preventDefault();
-        alert('Please fill out all fields.');
+    event.preventDefault();
+    const email = form.querySelector('input[type="email"]').value;
+    if(!validateEmail(email)) {
+        alert('Please enter a valid email address.');
+    } else {
+        form.submit(); // proceed with form submission
     }
 });
 
-// Gallery interactions
-const galleryItems = document.querySelectorAll('.gallery-item');
-galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-        item.classList.toggle('enlarged'); // Example interaction
+function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// Parallax Effects
+const parallaxElements = document.querySelectorAll('.parallax');
+window.addEventListener('scroll', () => {
+    parallaxElements.forEach(element => {
+        const speed = element.getAttribute('data-speed');
+        const yOffset = window.pageYOffset * speed;
+        element.style.transform = `translateY(${yOffset}px)`;
     });
 });
 
-// Performance optimizations
-const optimizePerformance = () => {
-    if ('requestAnimationFrame' in window) {
-        window.requestAnimationFrame(() => {
-            // Enclose your scroll-related code here for optimal performance.
-        });
-    }
-};
-
-document.addEventListener('scroll', optimizePerformance);
+// Interactive Features
+const interactiveElements = document.querySelectorAll('.interactive');
+interactiveElements.forEach(element => {
+    element.addEventListener('click', () => {
+        // Add your interactive logic here
+        element.classList.toggle('active');
+    });
+});
